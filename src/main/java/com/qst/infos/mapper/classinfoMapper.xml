@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qst.infos.dao.ClassInfoDao">
+	
+	<cache eviction="LRU" flushInterval="60000" size="512" >
+	</cache>
+	
+	<insert id="addClassInfo" parameterType="com.qst.infos.entity.ClassInfoEntity">
+		insert into classInfo values(null,#{grade},#{major.major_id},#{class_name},#{pop_num})
+	</insert>
+	
+	<resultMap type="com.qst.infos.entity.ClassInfoEntity" id="majorMap">
+		<result property="class_id" column="class_id"/>
+		<result property="grade" column="grade"/>
+		<result property="class_name" column="class_name"/>
+		<result property="pop_num" column="pop_num"/>
+		<association property="major" javaType="com.qst.infos.entity.MajorEntity">
+			<result property="major_id" column="major_id"/>
+			<result property="major_name" column="major_name"/>
+			<association property="college" javaType="com.qst.infos.entity.CollegeEntity">
+				<result property="college_id" column="college_id"/>
+				<result property="college_name" column="college_name"/>
+			</association>
+		</association>
+	</resultMap>
+	<select id="findAllClassInfo" resultMap="majorMap">
+		select c.*,m.*,col.* from classInfo c,major m,college col where c.major_id=m.major_id and m.college_id = col.college_id
+	</select> 
+	
+	<select id="findOneClassInfoById" parameterType="int" resultMap="majorMap">
+		select c.*,m.*,col.* from classInfo c,major m,college col where c.major_id=m.major_id and m.college_id = col.college_id and class_id=#{1}
+	</select>
+	<update id="updataClassInfoById" parameterType="com.qst.infos.entity.ClassInfoEntity" >
+		update  classInfo set grade=#{grade},major_id=#{major.major_id},class_name=#{class_name},pop_num=#{pop_num} where class_id=#{class_id}
+	</update>
+	
+	<delete id="deleteOneClassInfoById" parameterType="int">
+		 delete from classInfo where class_id =#{1}
+	</delete> 
+	
+	<select id="queryAllCollege" resultType="com.qst.infos.entity.CollegeEntity">
+		select * from college
+	</select>
+	
+	
+	<select id="queryInfoOfClass" resultMap="majorMap" parameterType="com.qst.infos.entity.ClassInfoEntity">
+		select c.*,m.*,col.* from classInfo c,major m,college col 
+		where c.major_id=m.major_id and m.college_id = col.college_id 
+		and grade =#{grade} and c.major_id =#{major.major_id}
+	</select>
+	
+	
+	
+</mapper>

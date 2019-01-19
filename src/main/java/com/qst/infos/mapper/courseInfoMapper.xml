@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qst.infos.dao.CourseInfoDao">
+	
+	<cache eviction="LRU" flushInterval="60000" size="512" readOnly="true">
+	</cache>
+	
+	<insert id="addOneCourseInfo" parameterType="com.qst.infos.entity.CourseInfoEntity">
+		insert into courseinfo values(null,#{courseinfo_num},#{courseinfo_name})
+	</insert>
+	
+	<select id="queryAllCourseInfo" resultType="com.qst.infos.entity.CourseInfoEntity">
+		select * from courseinfo 
+	</select>
+	
+	<select id="queryOneCourseInfo" resultType="com.qst.infos.entity.CourseInfoEntity">
+		select * from courseinfo 
+		where  courseinfo_id = #{courseinfo_id}
+	</select>
+	
+	<update id="updateOneCourseInfo" parameterType="com.qst.infos.entity.CourseInfoEntity">
+	
+		update courseinfo set courseinfo_num=#{courseinfo_num},courseinfo_name=#{courseinfo_name} 
+		where courseinfo_id=#{courseinfo_id}
+	</update>
+	<delete id="deleteOneCourse" parameterType="com.qst.infos.entity.CourseInfoEntity"> 
+		delete from courseinfo where  courseinfo_id=#{courseinfo_id}
+	</delete>	
+</mapper>

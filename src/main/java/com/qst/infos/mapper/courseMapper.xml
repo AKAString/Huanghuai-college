@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qst.infos.dao.CourseDao">
+	
+	<cache eviction="LRU" flushInterval="60000" size="512" readOnly="true">
+	</cache>
+	
+	<select id="queryAllCollege" resultType="com.qst.infos.entity.CollegeEntity">
+		select * from college
+	</select>
+	
+	<select id="queryAllCourseInfo" resultType="com.qst.infos.entity.CourseInfoEntity">
+		select * from courseinfo 
+	</select>
+	
+	<insert id="addOneCourse" parameterType="com.qst.infos.entity.CourseEntity">
+		insert into course 
+		values(null,#{courseInfo.courseinfo_id},#{course_credit},#{course_alltime},
+		#{course_theoreticaltime},#{course_experimentaltime},#{course_othertime},
+		#{course_weektime},#{course_opensemester},#{course_class},#{course_exam},#{college.college_id})
+	</insert>
+	
+	<resultMap type="com.qst.infos.entity.CourseEntity" id="courseMap">
+		<result property="coures_id" column="course_id"/>
+		<result property="course_credit" column="course_credit"/>
+		<result property="course_alltime" column="course_alltime"/>
+		<result property="course_theoreticaltime" column="course_theoreticaltime"/>
+		<result property="course_experimentaltime" column="course_experimentaltime"/>
+		<result property="course_othertime" column="course_othertime"/>
+		<result property="course_weektime" column="course_weektime"/>
+		<result property="course_opensemester" column="course_opensemester"/>
+		<result property="course_class" column="course_class"/>
+		<result property="course_exam" column="course_exam"/>
+		<association property="courseInfo" javaType="com.qst.infos.entity.CourseInfoEntity">
+			<result property="courseinfo_id" column="courseinfo_id"/>
+			<result property="courseinfo_num" column="courseinfo_num"/>
+			<result property="courseinfo_name" column="courseinfo_name"/>
+		</association>
+		<association property="college" javaType="com.qst.infos.entity.CollegeEntity">
+			<result property="college_id" column="college_id"/>
+			<result property="college_name" column="college_name"/>
+		</association>
+	
+	</resultMap>
+	
+	<select id="queryAllCourse" resultMap="courseMap">
+		select co.*,cf.*,col.* from course co,courseinfo cf, college col 
+		where  co.courseinfo_id = cf.courseinfo_id and  co.college_id = col.college_id;
+	</select>
+	
+	<select id="queryOneCourseById" parameterType="com.qst.infos.entity.CourseEntity" resultMap="courseMap">
+		select co.*,cf.*,col.* from course co,courseinfo cf, college col 
+		where  co.courseinfo_id = cf.courseinfo_id and  co.college_id = col.college_id 
+		and co.course_id = #{coures_id}
+	
+	</select>
+	<select id="querySomeCourse" parameterType="com.qst.infos.entity.CourseEntity" resultMap="courseMap">
+	select co.*,cf.*,col.* from course co,courseinfo cf, college col 
+		where  co.courseinfo_id = cf.courseinfo_id and  co.college_id = col.college_id 
+		and co.course_opensemester like '%${course_opensemester}%'   and  course_class like '%${course_class}%'
+        
+	
+	</select>
+	
+	<update id="updateOneCourseById" parameterType="com.qst.infos.entity.CourseEntity">
+	 update course set courseinfo_id = #{courseInfo.courseinfo_id},course_credit = #{course_credit},course_alltime=#{course_alltime},course_theoreticaltime=#{course_theoreticaltime},
+  course_experimentaltime = #{course_experimentaltime},course_othertime = #{course_othertime},course_weektime =#{course_weektime},course_opensemester = #{course_opensemester},
+  course_class = #{course_class},course_exam= #{course_exam} ,college_id = #{college.college_id} where course_id=#{coures_id}
+	</update>
+	<delete id="deleteOneCourseById" parameterType="com.qst.infos.entity.CourseEntity">
+			delete from course where course_id = #{coures_id}
+	</delete>
+	
+	
+	<insert id="addOneCoursePlan" parameterType="com.qst.infos.entity.CourseEntity">
+		<foreach collection="listOfClass" item="infos">
+			insert into course_classinfo_teacher(class_id,course_id,isPlaned) values(${infos.class_id},${coures_id},"no");
+		</foreach>
+	</insert>
+	
+	<resultMap type="com.qst.infos.entity.PlanCourseEntity" id="planMap">
+		<result property="isplaned" column="isplaned"/>
+	</resultMap>
+	
+	<select id="queryOneCoursePlan" parameterType="com.qst.infos.entity.CourseEntity"
+			resultMap="planMap">
+		<foreach collection="listOfClass" item="loc">
+			select * from  course_classinfo_teacher  where class_id=#{loc.class_id} and course_id =#{coures_id};
+		</foreach>
+	</select>
+	
+	<resultMap type="com.qst.infos.entity.PlanCourseEntity" id="coursePlanMap">
+			<result property="isplaned" column="isplaned"/>
+			<result property="classId" column="class_id"/>
+			<result property="courseId" column="course_id"/>
+			<result property="teacherId" column="teacher_id"/>
+				<result property="weekOfOpenCourse" column="weekofopencourse"/>
+			<!-- <association property="classInfo" javaType="com.qst.infos.entity.ClassInfoEntity">
+				<result property="class_id" column="class_id"/>
+			</association> -->
+			<!-- <association property="course" javaType="com.qst.infos.entity.CourseEntity">
+				<result property="coures_id" column="course_id"/>
+			</association>  -->
+	
+	</resultMap>
+	<select id="queryAllCoursePlan" resultMap="coursePlanMap">
+		select * from course_classinfo_teacher;
+	</select>
+	
+	<delete id="deleteOneOpenCourse" parameterType="com.qst.infos.entity.PlanCourseEntity">
+			delete from course_classinfo_teacher where class_id = #{classId} and course_id = #{courseId};
+	</delete>
+	
+	<update id="updateOneCoursePlan" parameterType="com.qst.infos.entity.PlanCourseEntity">
+		update course_classinfo_teacher set isplaned ='yes' ,teacher_id=#{teacher.teacher_id},weekofopencourse = #{weekOfOpenCourse}
+		where class_id =#{classId} and course_id = #{courseId};
+	
+	</update>
+	
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qst.infos.dao.TeacherDao">
+	
+	<cache eviction="LRU" flushInterval="60000" size="512" readOnly="true">
+	</cache>
+	<insert id="addOneTeacher" parameterType="com.qst.infos.entity.TeacherEntity">
+		
+		insert into teacher values(null,#{teacher_num},#{teacher_name},
+		#{teacher_sex},#{teacher_birthdate},#{teacher_intime},#{teacher_state}
+		,#{teacher_education},#{college.college_id});
+		
+	</insert>
+	<select id="queryTeacherMaxNumOfOneCollege" parameterType="com.qst.infos.entity.TeacherEntity" resultType="com.qst.infos.entity.TeacherEntity">
+		select teacher_id,max(teacher_num)teacher_num,teacher_name,teacher_sex,teacher_birthdate,teacher_intime,teacher_state 
+		from teacher  where teacher_num like  '${teacher_num}%'
+	</select>
+	
+	<resultMap type="com.qst.infos.entity.TeacherEntity" id="teacherMap">
+		<result property="teacher_id" column="teacher_id"/>
+		<result property="teacher_num" column="teacher_num"/>
+		<result property="teacher_name" column="teacher_name"/>
+		<result property="teacher_sex" column="teacher_sex"/>
+		<result property="teacher_birthdate" column="teacher_birthdate"/>
+		<result property="teacher_intime" column="teacher_intime"/>
+		<result property="teacher_state" column="teacher_state"/>
+		<result property="teacher_education" column="teacher_education"/>
+		<association property="college" javaType="com.qst.infos.entity.CollegeEntity">
+			<result property="college_id" column="college_id"/>
+			<result property="college_name" column="college_name"/>
+		</association>
+	</resultMap>
+	<select id="queryAllTeacher" resultMap="teacherMap">
+		select t.*,co.* from teacher t ,college co where t.college_id = co.college_id
+	</select>
+	
+	<select id="queryOneTeacherById" parameterType="com.qst.infos.entity.TeacherEntity" resultMap="teacherMap">
+		select t.*,co.* from teacher t ,college co where t.college_id = co.college_id and teacher_id = #{teacher_id}
+	</select>
+	<delete id="deleteOneTeacherById" parameterType="com.qst.infos.entity.TeacherEntity">
+		delete from teacher where teacher_id = #{teacher_id}
+	</delete>
+	
+	<update id="updateOneTeacherById" parameterType="com.qst.infos.entity.TeacherEntity">
+		update teacher set teacher_name =#{teacher_name} ,teacher_sex=#{teacher_sex},teacher_birthdate=#{teacher_birthdate},
+		teacher_intime=#{teacher_intime},teacher_state=#{teacher_state},teacher_education=#{teacher_education},
+		college_id  =#{college.college_id} where teacher_id = #{teacher_id}
+	
+	</update>
+	
+	<select id="querySomeTeacher" parameterType="int" resultMap="teacherMap">
+		select t.*,co.* from teacher t ,college co where t.college_id = co.college_id and t.college_id = #{teacherCollegeId};
+	</select>
+	
+	
+	
+</mapper>

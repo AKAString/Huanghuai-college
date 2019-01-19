@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qst.infos.dao.MajorDao">
+	
+	<cache eviction="LRU" flushInterval="60000" size="512" readOnly="true">
+	</cache>
+	
+	<insert id="addMajor" parameterType="com.qst.infos.entity.MajorEntity">
+		insert into major values(null,#{major_name},#{college.college_id})
+	</insert>
+		<resultMap type="com.qst.infos.entity.MajorEntity" id="majorMap">
+	<result property="major_id" column="major_id"/>
+	<result property="major_name" column="major_name"/>
+	<association property="college" javaType="com.qst.infos.entity.CollegeEntity">
+		<result property="college_id" column="college_id"/>
+		<result property="college_name" column="college_name"/>
+	</association>
+	</resultMap>
+	<select id="findMajorAllList" resultMap="majorMap">
+		select  major_id,major_name,college_name from major m,college c where m.college_id=c.college_id
+	</select>
+	
+	<select id="findMajorById" parameterType="com.qst.infos.entity.MajorEntity" resultMap="majorMap">
+		select * from major where major_id = #{major_id}
+	</select>
+	
+	<update id="updateMajorById" parameterType="com.qst.infos.entity.MajorEntity">
+		update major set major_name = #{major_name},college_id=#{college.college_id} where major_id = #{major_id}
+	</update>
+	<delete id="deleteMajorById" parameterType="com.qst.infos.entity.MajorEntity">
+		delete from major where major_id = #{major_id}
+	</delete>
+</mapper>

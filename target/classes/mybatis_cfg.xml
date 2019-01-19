@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 缓存 -->
+	
+	
+	<!-- 起别名 -->
+	<!-- <typeAliases>
+		<typeAlias alias="computer" type="com.qst.mybatis.entity.ComputerEntity"/>
+		<typeAlias alias="user" type="com.qst.mybatis.entity.User"/>
+	</typeAliases> -->
+	
+	<!--  配置拦截器信息  -->
+	<!-- <plugins  >
+		<plugin interceptor="com.qst.mybatis.incerceptor.PageInterceptor"></plugin>
+	</plugins>
+	 -->
+	
+	<!-- 配置数据信息，主备模式 -->
+	<!-- <environments default="development">
+
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://localhost:3307/qst?allowMultiQueries=true"  />
+				<property name="username" value="root" />
+				<property name="password" value="123456" />
+			</dataSource>
+		</environment>
+		
+	</environments>  -->
+
+	<!-- 用来加载mapper.xml -->
+	<mappers>
+		<mapper resource="com/qst/infos/mapper/userMapper.xml" />
+		<mapper resource="com/qst/infos/mapper/collegeMapper.xml" /> 
+		<mapper resource="com/qst/infos/mapper/courseInfoMapper.xml" /> 
+		<mapper resource="com/qst/infos/mapper/courseMapper.xml" /> 
+		<mapper resource="com/qst/infos/mapper/majorMapper.xml" /> 
+		<mapper resource="com/qst/infos/mapper/teacherMapper.xml" /> 
+		<mapper resource="com/qst/infos/mapper/classinfoMapper.xml" /> 
+		<!-- <mapper resource="com/qst/mybatis/mapper/classinfoMapper.xml" />
+		<mapper resource="com/qst/mybatis/mapper/roleMapper.xml" />
+		<mapper resource="com/qst/mybatis/mapper/meetingRoomMapper.xml" />
+		<mapper resource="com/qst/mybatis/mapper/deviceMapper.xml" />
+		<mapper resource="com/qst/mybatis/mapper/conferenceMapper.xml" />
+		<mapper resource="com/qst/mybatis/mapper/uploadMapper.xml" /> -->
+	</mappers>
+</configuration>

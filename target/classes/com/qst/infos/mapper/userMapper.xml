@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qst.infos.dao.UserDao">
+	
+	<cache eviction="LRU" flushInterval="60000" size="512" readOnly="true">
+	</cache>
+	
+	<insert id="addOneUser" parameterType="com.qst.infos.entity.UserEntity">
+		insert into myuser values(null,#{userName},#{userPwd})
+	</insert>
+	
+	<select id="queryAllUser" resultType="com.qst.infos.entity.UserEntity">
+		select * from myuser
+	</select>
+	
+	<select id="queryOneUserById" parameterType="int" resultType="com.qst.infos.entity.UserEntity">
+		select * from myuser where userid=#{1}
+	</select>
+	<update id="updataUserById" parameterType="com.qst.infos.entity.UserEntity" >
+		update  myuser set username=#{userName},userpwd=#{userPwd} where userid=#{userId}
+	</update>
+	
+	<delete id="deleteOneUserById" parameterType="int">
+		 delete from myuser where userid =#{1}
+	</delete>
+	
+	<select id=""></select>
+	
+</mapper>

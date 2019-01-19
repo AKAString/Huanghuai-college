@@ -1,0 +1,77 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	 http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.3.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	<context:component-scan base-package="com.qst.infos.*"></context:component-scan>
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="url">
+			<value>jdbc:mysql://localhost:3306/qr?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true</value>
+		</property>
+		<property name="username">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value>root</value>
+		</property>
+	</bean>
+	
+	<bean id="sqlSessionFactory" 
+	class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource"/>
+		</property>
+		<property name="configLocation">	
+			<value>classpath:mybatis_cfg.xml</value>
+		</property>
+	</bean>	
+	<!-- 打开 创建dao对象 session.openSession
+	类似ComputerDao ud = session.getMapper(ComputerDao.class); -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage">
+			<value>com.qst.infos.dao</value>
+		</property>
+	</bean>
+	
+	<!-- 处理控制器返回值 -->
+	<bean
+	 class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	
+		<property name="prefix">
+			<value>/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	
+	</bean>
+	
+	<!-- 文件解析器 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+     <property name="maxUploadSize" value="104857600" />
+     <property name="maxInMemorySize" value="4096" />
+     <property name="defaultEncoding" value="UTF-8"></property>
+	</bean>
+	
+	
+	<!-- 事务管理器 -->
+	<bean id="transactionManger"
+	 class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		 <property name="dataSource">
+	 		<ref bean="dataSource"/>
+		 </property>
+	 </bean>
+	 <!-- 扫描事务 -->
+<tx:annotation-driven transaction-manager="transactionManger"/>
+	
+	
+</beans>

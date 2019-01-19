@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qst.infos.dao.CollegeDao">
+	
+	<cache eviction="LRU" flushInterval="60000" size="512" readOnly="true">
+	</cache>
+	
+	<insert id="addOneCollege" parameterType="com.qst.infos.entity.CollegeEntity">
+		insert into college values(null,#{college_name})
+	</insert>
+	
+	<select id="queryAllCollege" resultType="com.qst.infos.entity.CollegeEntity">
+		select * from college
+	</select>
+	
+	<select id="queryOneCollegeById" parameterType="com.qst.infos.entity.CollegeEntity" resultType="com.qst.infos.entity.CollegeEntity">
+		select * from college where college_id = #{college_id}
+	</select>
+	
+	<update id="updateOneById" parameterType="com.qst.infos.entity.CollegeEntity">
+		update college set college_name = #{college_name} where college_id = #{college_id};
+	</update>
+	<delete id="deleteOneCollege" parameterType="com.qst.infos.entity.CollegeEntity">
+		delete from college where college_id = #{college_id};
+	</delete>
+	
+	
+	
+</mapper>
